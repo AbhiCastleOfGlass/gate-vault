@@ -1174,7 +1174,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Sidebar Mobile Toggle
     document.getElementById('mobile-menu-btn').addEventListener('click', toggleSidebar);
     document.getElementById('close-sidebar-btn').addEventListener('click', toggleSidebar);
-    document.getElementById('sidebar-overlay').addEventListener('click', toggleSidebar);
+    document.getElementById('sidebar-overlay').addEventListener('click', () => toggleSidebar(false));
 
     // Initial renders
     renderRoutine(routineData);
@@ -1204,15 +1204,21 @@ function toggleSidebar(forceOpen = null) {
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebar-overlay');
     
-    let isOpen = !sidebar.classList.contains('sidebar-closed');
-    if (forceOpen !== null) isOpen = !forceOpen;
-
-    if (isOpen) {
-        sidebar.classList.add('sidebar-closed');
-        overlay.classList.add('hidden');
+    let isCurrentlyOpen = !sidebar.classList.contains('sidebar-closed');
+    
+    let shouldBeOpen;
+    if (forceOpen !== null) {
+        shouldBeOpen = forceOpen === true;
     } else {
+        shouldBeOpen = !isCurrentlyOpen;
+    }
+
+    if (shouldBeOpen) {
         sidebar.classList.remove('sidebar-closed');
         overlay.classList.remove('hidden');
+    } else {
+        sidebar.classList.add('sidebar-closed');
+        overlay.classList.add('hidden');
     }
 }
 

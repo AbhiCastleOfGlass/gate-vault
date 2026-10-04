@@ -21,52 +21,70 @@
         
         /* Math typesetting font tweak */
         .math { font-family: 'Times New Roman', Times, serif; font-size: 1.1em; }
+    
+        /* Responsive Calc */
+        #calc-iframe { width: 470px; height: 500px; transform-origin: top left; max-width: none; border: none; }
+        .calc-wrapper { overflow: hidden; position: relative; width: 100%; height: 500px; }
+        @media (max-width: 500px) {
+            #calc-iframe { transform: scale(0.68); }
+            .calc-wrapper { height: 350px; }
+        }
+        
+        /* Hide spin buttons smoothly */
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type="number"] { -moz-appearance: textfield; }
+        
+        /* Smooth Scrollbar hide */
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
     </style>
 </head>
 <body class="text-gray-900 bg-gray-50 flex flex-col h-screen overflow-hidden">
     
     <!-- Top Nav -->
-    <header class="bg-white shadow-sm shrink-0 z-50 sticky top-0">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-            <div class="flex justify-between h-16 items-center">
-                <div class="flex items-center gap-4">
-                    <!-- Hamburger (Mobile Only) -->
-                    <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none">
-                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-                        </svg>
-                    </button>
-                    <!-- Logo -->
-                    <div class="flex items-center gap-2">
-                        <svg class="h-8 w-8 text-blue-600 hidden sm:block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-                        </svg>
-                        <span class="font-bold text-xl tracking-tight text-gray-900">GATE Vault '27</span>
-                    </div>
+    
+    <!-- Top Nav Responsive Fix -->
+    <header class="bg-white shadow-sm shrink-0 z-50 sticky top-0 w-full">
+        <!-- Row 1: Branding and Tools -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-b border-gray-100 flex justify-between h-14 items-center">
+            <div class="flex items-center gap-3 w-full">
+                <button id="mobile-menu-btn" class="lg:hidden p-1.5 rounded-md text-gray-500 hover:bg-gray-100 focus:outline-none shrink-0" aria-label="Menu">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+                <div class="flex items-center gap-2 min-w-0">
+                    <svg class="h-6 w-6 text-blue-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                    </svg>
+                    <span class="font-bold text-lg tracking-tight text-gray-900 truncate">GATE Vault</span>
                 </div>
-                <!-- Top Tabs (Routine & Strategy) -->
-                <div class="flex space-x-4 sm:space-x-8 h-full">
-                    <button onclick="switchMainTab('practice')" id="tab-practice" class="top-tab text-blue-600 border-blue-600 border-b-2 font-medium text-sm px-1 py-5 transition-colors">
-                        PYQ Practice
-                    </button>
-                    <button onclick="switchMainTab('routine')" id="tab-routine" class="top-tab text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300 border-b-2 font-medium text-sm px-1 py-5 transition-colors">
-                        Routine
-                    </button>
-                    <button onclick="switchMainTab('strategy')" id="tab-strategy" class="top-tab text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300 border-b-2 font-medium text-sm px-1 py-5 transition-colors">
-                        Strategy
-                    </button>
-                
-                    <button onclick="toggleTools()" class="text-white bg-gray-900 hover:bg-gray-800 rounded-md font-medium text-xs sm:text-sm px-3 sm:px-4 py-2 transition-colors flex items-center gap-2 shadow-sm my-auto ml-1 sm:ml-4">
-                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            </div>
+            <button onclick="toggleTools()" class="shrink-0 text-white bg-gray-900 hover:bg-gray-800 rounded-md font-medium text-xs px-3 py-1.5 flex items-center gap-1.5 shadow-sm transition-colors">
+                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
-                        Tools
-                    </button>
-</div>
+                </svg> Tools
+            </button>
+        </div>
+        <!-- Row 2: Tabs (Scrollable on mobile) -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-b border-gray-200">
+            <div class="flex gap-6 overflow-x-auto whitespace-nowrap scrollbar-hide -mb-px">
+                <button onclick="switchMainTab('practice')" id="tab-practice" class="top-tab text-blue-600 border-blue-600 border-b-2 font-medium text-sm py-3 transition-colors shrink-0">
+                    PYQ Practice
+                </button>
+                <button onclick="switchMainTab('routine')" id="tab-routine" class="top-tab text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300 border-b-2 font-medium text-sm py-3 transition-colors shrink-0">
+                    Adaptive Routine
+                </button>
+                <button onclick="switchMainTab('strategy')" id="tab-strategy" class="top-tab text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300 border-b-2 font-medium text-sm py-3 transition-colors shrink-0">
+                    Strategy Pipeline
+                </button>
             </div>
         </div>
     </header>
+
 
     <!-- App Body -->
     <div class="flex flex-1 overflow-hidden relative">
@@ -174,11 +192,11 @@
                 <div class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Countdown Timer</div>
                 
                 <div id="timer-inputs" class="flex justify-center items-center gap-2 mb-4">
-                    <input type="number" id="tm-h" min="0" max="99" value="0" class="w-12 h-10 text-center font-mono text-xl border border-gray-300 rounded focus:border-blue-500 focus:outline-none" placeholder="HH">
+                    <input type="number" id="tm-h" min="0" max="99" value="00" class="w-14 px-1 py-2 text-center font-mono text-xl border border-gray-300 rounded focus:border-blue-500 focus:outline-none" placeholder="HH">
                     <span class="font-bold text-gray-400">:</span>
-                    <input type="number" id="tm-m" min="0" max="59" value="15" class="w-12 h-10 text-center font-mono text-xl border border-gray-300 rounded focus:border-blue-500 focus:outline-none" placeholder="MM">
+                    <input type="number" id="tm-m" min="0" max="59" value="15" class="w-14 px-1 py-2 text-center font-mono text-xl border border-gray-300 rounded focus:border-blue-500 focus:outline-none" placeholder="MM">
                     <span class="font-bold text-gray-400">:</span>
-                    <input type="number" id="tm-s" min="0" max="59" value="0" class="w-12 h-10 text-center font-mono text-xl border border-gray-300 rounded focus:border-blue-500 focus:outline-none" placeholder="SS">
+                    <input type="number" id="tm-s" min="0" max="59" value="00" class="w-14 px-1 py-2 text-center font-mono text-xl border border-gray-300 rounded focus:border-blue-500 focus:outline-none" placeholder="SS">
                 </div>
                 
                 <div id="timer-display" class="hidden font-mono text-4xl font-bold text-gray-900 mb-4 tracking-tight tabular-nums">00:15:00</div>
@@ -195,7 +213,11 @@
                     GATE Scientific Calc (TCS iON)
                 </div>
                 <!-- Embed Real Calc via iFrame -->
-                <iframe src="./assets/SCIENTIFIC_CALCULATOR.html" class="w-full h-full flex-1 border-none" style="min-height:480px; overflow:hidden;" scrolling="no"></iframe>
+                
+                <div class="calc-wrapper bg-gray-100">
+                    <iframe id="calc-iframe" src="./assets/SCIENTIFIC_CALCULATOR.html" scrolling="no"></iframe>
+                </div>
+
             </div>
         </div>
     </div>
