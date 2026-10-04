@@ -1172,8 +1172,8 @@ document.addEventListener("DOMContentLoaded", () => {
     switchMainTab('practice');
 
     // Sidebar Mobile Toggle
-    document.getElementById('mobile-menu-btn').addEventListener('click', toggleSidebar);
-    document.getElementById('close-sidebar-btn').addEventListener('click', toggleSidebar);
+    document.getElementById('mobile-menu-btn').addEventListener('click', () => toggleSidebar());
+    document.getElementById('close-sidebar-btn').addEventListener('click', () => toggleSidebar(false));
     document.getElementById('sidebar-overlay').addEventListener('click', () => toggleSidebar(false));
 
     // Initial renders
@@ -1187,11 +1187,11 @@ window.switchMainTab = function(tabId) {
 
     document.querySelectorAll('.top-tab').forEach(el => {
         el.classList.remove('text-blue-600', 'border-blue-600');
-        el.classList.add('text-gray-500', 'border-transparent');
+        el.classList.add('text-gray-500 dark:text-gray-400', 'border-transparent');
     });
 
     let activeTab = document.getElementById('tab-' + tabId);
-    activeTab.classList.remove('text-gray-500', 'border-transparent');
+    activeTab.classList.remove('text-gray-500 dark:text-gray-400', 'border-transparent');
     activeTab.classList.add('text-blue-600', 'border-blue-600');
 
     // If switching to practice, open sidebar on mobile initially if nothing is selected
@@ -1228,7 +1228,7 @@ function renderSidebar() {
 
     Object.keys(groupedData).forEach(subject => {
         let subjHeader = document.createElement('div');
-        subjHeader.className = 'font-bold text-gray-900 text-xs uppercase tracking-wider mb-3 mt-6 first:mt-0';
+        subjHeader.className = 'font-bold text-gray-900 dark:text-white dark:text-gray-300 text-xs uppercase tracking-wider mb-3 mt-6 first:mt-0';
         subjHeader.innerText = subject;
         list.appendChild(subjHeader);
 
@@ -1238,15 +1238,15 @@ function renderSidebar() {
         Object.keys(groupedData[subject]).forEach(topic => {
             let li = document.createElement('li');
             let btn = document.createElement('button');
-            btn.className = 'w-full text-left px-3 py-2 text-sm text-gray-600 rounded-md hover:bg-blue-50 hover:text-blue-700 transition-colors focus:outline-none';
+            btn.className = 'w-full text-left px-3 py-2 text-sm text-gray-600 dark:text-gray-300 dark:text-gray-400 rounded-md hover:bg-blue-50 dark:bg-blue-900/20 dark:hover:bg-blue-900/50 hover:text-blue-700 dark:text-blue-300 transition-colors focus:outline-none';
             btn.innerText = topic;
             
             btn.onclick = () => {
                 // Remove active states
                 document.querySelectorAll('#sidebar-content button').forEach(b => {
-                    b.classList.remove('bg-blue-50', 'text-blue-700', 'font-medium');
+                    b.classList.remove('bg-blue-50 dark:bg-blue-900/20', 'text-blue-700 dark:text-blue-300', 'font-medium');
                 });
-                btn.classList.add('bg-blue-50', 'text-blue-700', 'font-medium');
+                btn.classList.add('bg-blue-50 dark:bg-blue-900/20', 'text-blue-700 dark:text-blue-300', 'font-medium');
                 
                 renderQuestions(subject, topic);
                 if (window.innerWidth < 1024) toggleSidebar(false); // Close on mobile
@@ -1262,7 +1262,7 @@ function renderSidebar() {
 
 function renderQuestions(subject, topic) {
     const header = document.getElementById('practice-header');
-    header.innerHTML = `<h2 class="text-2xl font-bold text-gray-900">${topic}</h2><p class="text-sm text-gray-500 mt-1">${subject} • ${groupedData[subject][topic].length} Questions</p>`;
+    header.innerHTML = `<h2 class="text-2xl font-bold text-gray-900 dark:text-white">${topic}</h2><p class="text-sm text-gray-500 dark:text-gray-400 mt-1">${subject} • ${groupedData[subject][topic].length} Questions</p>`;
 
     const container = document.getElementById('questions-container');
     container.innerHTML = '';
@@ -1272,9 +1272,9 @@ function renderQuestions(subject, topic) {
     // Show pattern summary first
     if (questions.length > 0) {
         container.innerHTML += `
-            <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg mb-6 shadow-sm">
+            <div class="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 dark:border-blue-400 p-4 rounded-r-lg mb-6 shadow-sm">
                 <span class="text-xs font-bold text-blue-800 uppercase tracking-wide">Core Pattern Observed</span>
-                <p class="text-sm text-blue-900 mt-1">${questions[0].pattern}</p>
+                <p class="text-sm text-blue-900 dark:text-blue-200 mt-1">${questions[0].pattern}</p>
             </div>
         `;
     }
@@ -1283,31 +1283,31 @@ function renderQuestions(subject, topic) {
         let uid = 'ans-' + Math.random().toString(36).substr(2, 9);
         
         container.innerHTML += `
-            <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden text-left">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden text-left">
                 <div class="p-5">
                     <div class="flex items-start gap-4">
-                        <div class="shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 font-bold text-sm text-gray-500">
+                        <div class="shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-700 font-bold text-sm text-gray-500 dark:text-gray-400">
                             Q${index + 1}
                         </div>
                         <div class="flex-1">
-                            <p class="text-gray-900 font-medium leading-relaxed math">${q.question}</p>
+                            <p class="text-gray-900 dark:text-white font-medium leading-relaxed math">${q.question}</p>
                         </div>
                     </div>
                 </div>
                 
                 <!-- Action Bar -->
-                <div class="bg-gray-50 px-5 py-3 border-t border-gray-100 flex justify-end">
-                    <button onclick="document.getElementById('${uid}').classList.toggle('hidden')" class="text-sm font-medium text-blue-600 hover:text-blue-700 flex items-center gap-1 focus:outline-none">
+                <div class="bg-gray-50 dark:bg-gray-900 px-5 py-3 border-t border-gray-100 dark:border-gray-700 flex justify-end">
+                    <button onclick="document.getElementById('${uid}').classList.toggle('hidden')" class="text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-300 flex items-center gap-1 focus:outline-none">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
                         Toggle Solution
                     </button>
                 </div>
                 
                 <!-- Answer Accordion -->
-                <div id="${uid}" class="hidden border-t border-gray-100 bg-green-50/30">
+                <div id="${uid}" class="hidden border-t border-gray-100 dark:border-gray-700 bg-green-50/30 dark:bg-green-900/20">
                     <div class="p-6">
-                        <span class="text-xs font-bold text-green-700 uppercase tracking-widest mb-3 block">Solution Approach</span>
-                        <p class="text-sm text-gray-800 whitespace-pre-wrap leading-relaxed math">${q.solution}</p>
+                        <span class="text-xs font-bold text-green-700 dark:text-green-400 uppercase tracking-widest mb-3 block">Solution Approach</span>
+                        <p class="text-sm text-gray-800 dark:text-gray-200 whitespace-pre-wrap leading-relaxed math">${q.solution}</p>
                     </div>
                 </div>
             </div>
@@ -1324,20 +1324,20 @@ function renderRoutine(data) {
         const title = day.type === 'weekday' ? 'Weekday Protocol (Mon - Fri)' : 'Weekend Protocol (Sat - Sun)';
         
         let html = `
-            <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden mb-6">
-                <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
-                    <h3 class="text-lg font-bold text-gray-800">${title}</h3>
-                    <p class="text-sm text-gray-500 mt-1">${day.notes}</p>
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden mb-6">
+                <div class="bg-gray-50 dark:bg-gray-900 px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                    <h3 class="text-lg font-bold text-gray-800 dark:text-gray-200">${title}</h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">${day.notes}</p>
                 </div>
                 <div class="p-6">
-                    <div class="relative border-l-2 border-dashed border-gray-200 ml-3 md:ml-4">
+                    <div class="relative border-l-2 border-dashed border-gray-200 dark:border-gray-700 ml-3 md:ml-4">
         `;
 
         day.schedule.forEach(slot => {
-            let color = 'bg-gray-100 text-gray-500 border-gray-200';
-            if (slot.tag === 'work') color = 'bg-orange-100 text-orange-700 border-orange-200';
-            if (slot.tag === 'study') color = 'bg-blue-100 text-blue-700 border-blue-200';
-            if (slot.tag === 'study-micro') color = 'bg-indigo-100 text-indigo-700 border-indigo-200';
+            let color = 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 border-gray-200 dark:border-gray-700';
+            if (slot.tag === 'work') color = 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 border-orange-200 dark:border-orange-800';
+            if (slot.tag === 'study') color = 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800';
+            if (slot.tag === 'study-micro') color = 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800';
 
             html += `
                 <div class="mb-8 ml-6 relative">
@@ -1345,7 +1345,7 @@ function renderRoutine(data) {
                         <span class="block w-2.5 h-2.5 rounded-full ${color.split(' ')[0]}"></span>
                     </span>
                     <div class="flex flex-col md:flex-row md:items-baseline md:space-x-4">
-                        <span class="text-sm font-mono font-bold text-gray-500 w-40 shrink-0">${slot.time}</span>
+                        <span class="text-sm font-mono font-bold text-gray-500 dark:text-gray-400 w-40 shrink-0">${slot.time}</span>
                         <div class="mt-1 md:mt-0 px-3 py-1.5 rounded-md inline-block text-sm font-medium border ${color}">
                             ${slot.task}
                         </div>
@@ -1572,3 +1572,38 @@ document.addEventListener("DOMContentLoaded", () => {
         startBtn.classList.replace('hover:bg-orange-700', 'hover:bg-blue-700');
     });
 });
+\n
+// ==========================================
+// DARK MODE LOGIC
+// ==========================================
+function toggleTheme() {
+    if (document.documentElement.classList.contains('dark')) {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+    } else {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+    }
+    updateThemeIcon();
+}
+
+function updateThemeIcon() {
+    const isDark = document.documentElement.classList.contains('dark');
+    const icon = document.getElementById('theme-icon');
+    if (!icon) return;
+    if (isDark) {
+        // Sun Icon
+        icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m8.66-8.66h-1M4.34 12.34h-1m15.36 4.95l-.7-.7M6.34 6.34l-.7-.7m12.02 0l-.7.7M6.34 17.66l-.7.7M12 8a4 4 0 100 8 4 4 0 000-8z"/>';
+    } else {
+        // Moon Icon
+        icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>';
+    }
+}
+
+// Initial Theme execution (runs before DOM loads fully, but we call updateThemeIcon on load)
+if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    document.documentElement.classList.add('dark');
+} else {
+    document.documentElement.classList.remove('dark');
+}
+document.addEventListener("DOMContentLoaded", updateThemeIcon);
